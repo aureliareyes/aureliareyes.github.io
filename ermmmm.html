@@ -1,0 +1,1429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Gloria+Hallelujah&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ------------ Base ------------ */
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #ffe4ec, #e8f0ff);
+      color: #333;
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+
+    /* ------------ Title Screen ------------ */
+    #titleScreen {
+      position: fixed;
+      top: 0; left: 0;
+      z-index: 9999;
+      width: 100vw; height: 100vh;
+      background: url('heartbg.jpg') center/cover no-repeat;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .title-wrapper { text-align: center; }
+    .typing-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 56px;
+      color: #ff2f92;
+      text-shadow: 2px 2px 0 #fff;
+      min-height: 70px;
+      margin-bottom: 20px;
+    }
+    .start-btn {
+      padding: 12px 32px;
+      font-size: 18px;
+      border: none;
+      background-color: #ff2f92;
+      color: #fff;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: transform 0.2s, background-color 0.3s;
+    }
+    .start-btn:hover {
+      background-color: #d10072;
+      transform: scale(1.05);
+    }
+
+    /* ------------ Character Select ------------ */
+    #characterSelectScreen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background: linear-gradient(135deg, #ffe4ec, #e8f0ff);
+      color: #333;
+      text-align: center;
+      padding: 20px;
+    }
+    #characterSelectScreen h2 {
+      font-size: 28px;
+      font-weight: 600;
+      margin-bottom: 40px;
+    }
+    .character-options {
+      display: flex;
+      justify-content: center;
+      gap: 80px;
+      flex-wrap: wrap;
+      max-width: 100%;
+      margin-top: 20px;
+    }
+    .character-card {
+      position: relative;
+      width: 200px; height: 280px;
+      border-radius: 20px;
+      border: 2px solid #444;
+      background-color: #111;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: center;
+      overflow: hidden;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .character-card img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .character-card p {
+      background: rgba(0,0,0,0.6);
+      color: #fff;
+      font-size: 16px;
+      padding: 8px 0;
+      width: 100%;
+      margin: 0;
+      text-align: center;
+    }
+    .character-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 15px 30px rgba(255,127,168,0.3);
+    }
+    .character-card.selected {
+      transform: scale(1.1);
+      box-shadow: 0 15px 30px rgba(255,127,168,0.4);
+      z-index: 1;
+    }
+    #nextBtnWrapper { margin-top: 30px; }
+
+    /* ------------ Name Input ------------ */
+    #nameInputScreen {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    /* ------------ Game / Date Select ------------ */
+    #gameScreen {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #ffe4ec, #e8f0ff);
+      padding: 20px;
+      min-height: 100vh;
+    }
+    .date-options {
+      display: flex;
+      justify-content: center;
+      gap: 80px;
+      flex-wrap: wrap;
+      margin-top: 60px;
+      overflow: visible;
+      position: relative;
+    }
+    .date-card {
+      position: relative;
+      width: 200px; height: 280px;
+      border-radius: 20px;
+      border: 2px solid #444;
+      background-color: #111;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      overflow: visible;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .date-card p {
+      background: rgba(0,0,0,0.6);
+      color: #fff;
+      font-size: 16px;
+      padding: 8px 0;
+      width: 100%;
+      margin: 0;
+      text-align: center;
+    }
+    .date-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 15px 30px rgba(255,127,168,0.3);
+    }
+    .date-card.selected {
+      transform: scale(1.1);
+      box-shadow: 0 20px 40px rgba(255,127,168,0.5);
+      z-index: 1;
+    }
+    .img-wrapper {
+      width: 100%; height: 230px;
+      overflow: hidden;
+      border-radius: 20px;
+    }
+    .img-wrapper img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .speech-bubble {
+      position: absolute;
+      top: -50px; left: 50%;
+      transform: translateX(-50%) scale(0.95);
+      background: #fff;
+      color: #333;
+      padding: 10px 14px;
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      font-size: 14px;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s, transform 0.3s;
+      z-index: 999;
+    }
+    .speech-bubble::after {
+      content: "";
+      position: absolute;
+      top: 100%; left: 50%;
+      transform: translateX(-50%);
+      border-top: 6px solid #fff;
+      border-left: 6px solid transparent;
+      border-right: 6px solid transparent;
+    }
+    .date-card:hover .speech-bubble {
+      opacity: 1;
+      transform: translateX(-50%) scale(1);
+    }
+
+    /* ------------ Chat Screen ------------ */
+    #chatScreen {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+      padding: 20px;
+      background: linear-gradient(135deg, #ffe4ec, #e8f0ff);
+    }
+    .chat {
+      background: #f0f0f0;
+      padding: 20px;
+      max-width: 400px;
+      margin: 40px auto 0;
+      border-radius: 16px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      font-family: sans-serif;
+    }
+    .message {
+      padding: 10px 15px;
+      border-radius: 16px;
+      margin-bottom: 8px;
+      max-width: 75%;
+      word-wrap: break-word;
+    }
+    .ai   { background-color: #e0e0e0; align-self: flex-start; }
+    .user { background-color: #a8dcff; align-self: flex-end; margin-left: auto; }
+
+    /* ------------ Buttons / Warnings ------------ */
+    .back-btn {
+      position: absolute;
+      bottom: 20px; left: 20px;
+      padding: 10px 20px;
+      background-color: #ff7fa8;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    .back-btn:hover { background-color: #e85d90; }
+
+    #chatScreen .back-btn {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      z-index: 1001;
+    }
+
+    .options {
+      display: flex;
+      flex-direction: column;
+      max-width: 400px;
+      margin: 20px auto;
+      gap: 10px;
+    }
+    .options button {
+      background-color: #ff7fa8;
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      padding: 16px;
+      font-size: 16px;
+      line-height: 1.4;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    .options button:hover { background-color: #e85d90; }
+
+    .options input {
+      font-size: 16px;
+      line-height: 1.4;
+      padding: 12px;
+    }
+    .options input::placeholder {
+      font-size: 16px;
+      opacity: 0.7;
+    }
+
+    /* ------------ Warning Modals (z-index raised) ------------ */
+    #cuteWarning, #intimacyWarning, #echoWarning, #endlessWarning, #hallucinationWarning{
+      display: none;
+      position: fixed;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -60%) scale(0.9);
+      transform-origin: center center;
+      z-index: 10002;              /* raised above danger meter */
+      background: #fff0f7;
+      border: 2px solid #ff91c2;
+      border-radius: 16px;
+      padding: 20px 30px;
+      box-shadow: 0 10px 30px rgba(255,127,168,0.3);
+      text-align: center;
+      animation: popIn 0.4s ease forwards;
+    }
+    #cuteWarning p { margin: 0 0 10px; font-size:16px; color:#d10072 }
+    #cuteWarning button,
+    #intimacyWarning button,
+    #echoWarning button,
+    #endlessWarning button,
+    #hallucinationWarning button {
+      background-color: #ff7fa8;
+      color: #fff;
+      padding: 12px 24px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    #cuteWarning button:hover,
+    #intimacyWarning button:hover,
+    #echoWarning button:hover,
+    #endlessWarning button:hover,
+    #hallucinationWarning button:hover {
+      background-color: #e85d90;
+    }
+    #cuteWarning p + p,
+    #intimacyWarning p + p,
+    #echoWarning p + p,
+    #endlessWarning p + p,
+    #hallucinationWarning p + p {
+      font-size:14px; color:#333; margin:0;
+    }
+
+    @keyframes popIn {
+      0%   { opacity:0; transform: translate(-50%,-60%) scale(0.9) }
+      60%  { opacity:1; transform: translate(-50%,-50%) scale(1.05) }
+      100% { opacity:1; transform: translate(-50%,-50%) scale(1)    }
+    }
+
+    /* ------------ Danger Panel ------------ */
+    #dangerPanel {
+      position: fixed; top:150px; right:20px;
+      width:200px; padding:12px;
+      background: rgba(255,255,255,0.9);
+      border: 2px solid #ff91c2;
+      border-radius:12px; text-align:center;
+      transform: translateX(100%) scale(0.8);
+      opacity:0; transition: transform 0.4s ease, opacity 0.4s ease;
+      z-index:10000;
+    }
+    #dangerPanel h3 { margin:0 0 8px; font-size:16px; color:#d10072; letter-spacing:1px }
+    #dangerPanel img { width:100%; height:auto; display:block }
+    #dangerPanel.show { transform: translateX(0) scale(1); opacity:1 }
+    @keyframes flashRed {
+      0%,100%{box-shadow:0 0 0 transparent}
+      50%    {box-shadow:0 0 20px rgba(255,0,0,0.8)}
+    }
+    #dangerPanel.flash {
+      animation-name: flashRed;
+      animation-duration:0.5s;
+      animation-timing-function:ease-in-out;
+      animation-iteration-count:3;
+    }
+
+ #extremeAlert.warningModal {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(1.2);
+  z-index: 10003;
+  background: #ffecea;
+  border: 4px solid red;
+  border-radius: 16px;
+  padding: 40px 60px;
+  width: auto;
+  min-width: 60vw;
+  max-width: 90vw;
+  box-sizing: border-box;
+  text-align: center;
+  animation: popIn 0.4s ease forwards;
+}
+#extremeAlert.warningModal h2 {
+  margin: 0 0 12px;
+  font-size: 48px;
+  color: #900;
+}
+#extremeAlert.warningModal p {
+  margin: 0 0 20px;
+  font-size: 28px;
+  color: #600;
+}
+#extremeAlert.warningModal p:last-of-type {
+  margin-bottom: 6px; /* Adjust this value to your liking */
+}
+#extremeAlert.warningModal button {
+  padding: 16px 32px;
+  font-size: 20px;
+  background: #900;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s;
+  margin-top: 24px;
+}
+#extremeAlert.warningModal button:hover {
+  background: #b00;
+}
+
+#quizWarning.warningModal {
+    display: none;              
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) scale(1);
+    z-index: 10004;
+    background: #fff0f7;
+    border:   2px solid #ff91c2;
+    border-radius: 16px;
+    padding: 30px 40px;
+    text-align: center;
+    animation: popIn 0.4s ease forwards;
+  }
+  #quizWarning.warningModal h2 {
+    margin-bottom: 8px;
+    font-size: 32px;
+    color: #d10072;
+  }
+  #quizWarning.warningModal p {
+    margin-bottom: 16px;
+    font-size: 18px;
+    color: #333;
+  }
+  #quizWarning.warningModal button {
+  position: center ;
+  padding: 16px 32px;    
+  font-size: 18px;       
+  border-radius: 8px;
+  background-color: #ff7fa8;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  
+}
+#quizWarning.warningModal button:hover {
+  background-color: #e85d90;
+  transform: translateY(-8px);
+      box-shadow: 0 15px 30px rgba(255,127,168,0.3);
+}
+
+
+
+.reminder-panel {
+  width: 100%;
+  padding: 20px;
+  background-image: url('pinkbg.jpg'); 
+  background-size: cover;
+  background-repeat: no-repeat;
+  font-family: 'Gloria Hallelujah', cursive;
+  font-size: 20px;
+  font-weight: bold;
+  color: #b30059;
+  line-height: 1.8;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
+}
+
+#reminderTyping {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  margin: 0;
+  padding: 2rem;           /* whatever inner padding you like */
+  background: url('pinkbg.jpg') center/cover no-repeat;
+  display: none;           /* you still toggle this in JS */
+  overflow-y: auto;
+  font-family: 'Gloria Hallelujah', cursive;
+  color: #b30059;
+}
+/* now style the text inside */
+#reminderTyping .reminder-heading {
+  font-size: 2.2em;
+}
+#reminderTyping .reminder-subheading {
+  font-size: 1.6em;
+}
+#reminderTyping .reminder-list {
+  font-size: 1em;
+}
+
+/* ------------ Final Result Styles ------------ */
+#questionScreen .final-container {
+  background: rgba(255, 240, 250, 0.95);
+  border: 2px solid #ff91c2;
+  border-radius: 16px;
+  padding: 30px;
+  max-width: 400px;
+  margin: 2rem auto;
+  text-align: center;
+  font-family: 'Gloria Hallelujah', cursive;
+  color: #d10072;
+  box-shadow: 0 5px 20px rgba(255,127,168,0.4);
+}
+#questionScreen .final-container h2 {
+  font-size: 2.5em;
+  margin-bottom: 0.5em;
+}
+#questionScreen .final-container p {
+  font-size: 1.2em;
+  line-height: 1.4;
+}
+#characterSelectScreen .back-btn {
+  display: none;
+}
+/* at the bottom of your <style> block */
+
+/* 1) Give the quiz screen a gradient background and padding */
+#questionScreen {
+  display: flex;
+  flex-direction: column;        /* stack heading, prompt, buttons */
+  justify-content: center;       /* vertical centering */
+  align-items: center;           /* horizontal centering */
+  min-height: 100vh;             /* fill the screen */
+  padding: 2rem;
+  background: rgba(255,255,255,0.8);
+  border: 2px solid #ff91c2;
+  border-radius: 16px;
+  max-width: 600px;
+  margin: 2rem auto;             /* auto side‐margins to center */
+  box-shadow: 0 10px 30px rgba(255,127,168,0.3);
+  font-family: 'Gloria Hallelujah', cursive;
+  color: #b30059;
+  text-align: center;
+}
+/* 2) Style the question card */
+#questionScreen .quiz-card {
+  background: rgba(255,255,255,0.8);
+  border-radius: 16px;
+  border: 2px solid #ff91c2;
+  padding: 1.5rem 2rem;
+  max-width: 500px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(255,127,168,0.3);
+  margin-bottom: 1.5rem;
+}
+
+/* 3) Headings in Orbitron for a techy contrast */
+#questionScreen .quiz-card h2 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 2rem;
+  color: #ff2f92;
+  margin-bottom: 0.5rem;
+}
+
+/* 4) Make the description stand out */
+#questionScreen .quiz-card blockquote {
+  font-style: italic;
+  border-left: 4px solid #ff2f92;
+  padding-left: 1rem;
+  margin: 1rem 0;
+}
+
+/* 5) Pink gradient buttons */
+#quizOptions button {
+  background: linear-gradient(135deg, #ff7fa8, #ff2f92);
+  border: none;
+  border-radius: 12px;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  color: #fff;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  margin: 0.25rem;
+}
+#quizOptions button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(255,127,168,0.4);
+}
+
+
+
+  </style>
+</head>
+<body>
+
+<audio
+  id="bgm"
+  src="assets/bgm.mp3"
+  loop
+  style="display: none;"
+></audio>
+
+  <!-- Title Screen -->
+  <div id="titleScreen">
+    <div class="title-wrapper">
+      <h1 id="typewriter" class="typing-title"></h1>
+      <button class="start-btn" id="startButton" onclick="goToCharacterSelect()" style="display: none;">Start</button>
+      
+    </div>
+  </div>
+  
+
+  <!-- Character Select Screen -->
+  <div id="characterSelectScreen" style="display: none;">
+    <h2>Choose Your Character</h2>
+    <div class="character-options">
+      <div class="character-card">
+        <img src="girl.png" alt="Girl character">
+        <p>Girl</p>
+      </div>
+      <div class="character-card">
+        <img src="guy.png" alt="Guy character">
+        <p>Guy</p>
+      </div>
+    </div>
+    <div id="nextBtnWrapper" style="display: none;">
+      <button class="start-btn" onclick="startGame()">Next →</button>
+    </div>
+  </div>
+
+  <!-- Name Input Screen -->
+  <div id="nameInputScreen" style="display: none;">
+    <h2>What’s your name?</h2>
+    <input type="text" id="playerName" placeholder="Type your name..." style="padding: 10px; font-size: 16px; border-radius: 8px; border: 1px solid #ccc;" />
+    <button class="start-btn" onclick="submitName()" style="margin-top: 20px;">Next →</button>
+    <button class="back-btn" onclick="goToCharacterSelect()">← Back</button>
+  </div>
+
+  <!-- Game Screen -->
+  <div id="gameScreen" style="display: none;">
+    <h2>Pick Your Date</h2>
+
+    <!-- Guy’s Options -->
+    <div id="guyDateOptions" class="date-options" style="display: none;">
+      <div class="date-card">
+        <div class="speech-bubble">Can recite 100 digits of Pi 👩🏻‍💻</div>
+        <div class="img-wrapper"><img src="girl1.png" alt="Date 1"></div>
+        <p>Aria</p>
+      </div>
+      <div class="date-card">
+        <div class="speech-bubble">Volunteers at an animal shelter 🐶</div>
+        <div class="img-wrapper"><img src="girl2.png" alt="Date 2"></div>
+        <p>Luna</p>
+      </div>
+      <div class="date-card">
+        <div class="speech-bubble">Thinks pineapple belongs on pizza 🍍🍕</div>
+        <div class="img-wrapper"><img src="girl3.png" alt="Date 3"></div>
+        <p>Rhea</p>
+      </div>
+    </div>
+
+    <!-- Girl’s Options -->
+    <div id="girlDateOptions" class="date-options" style="display: none;">
+      <div class="date-card">
+        <div class="speech-bubble">Loves writing poetry📜</div>
+        <div class="img-wrapper"><img src="boy1.png" alt="Date 1"></div>
+        <p>Leo</p>
+      </div>
+      <div class="date-card">  
+        <div class="speech-bubble">Has 7 dogs🐶</div>
+        <div class="img-wrapper"><img src="boy2.png" alt="Date 2"></div>
+        <p>Max</p>
+      </div>
+      <div class="date-card">
+        <div class="speech-bubble">Eats 5 pizzas a day🍕</div>
+        <div class="img-wrapper"><img src="boy3.png" alt="Date 3"></div>
+        <p>Kai</p>
+      </div>
+    </div>
+
+    <button class="start-btn" onclick="goToChat()" style="margin-top: 40px;">Start Chat 💬</button>
+    <button class="back-btn" onclick="goToCharacterSelect()" style="margin-top: 20px;">← Back</button>
+  </div>
+
+  <!-- Chat Simulation Screen -->
+  <div id="chatScreen" style="display: none;">
+    <div id="chatWindow" class="chat">
+      <div class="message ai">hey you quick q</div>
+    </div>
+    <div class="options" style="display: none;"></div>
+    <div id="followUpOptions" class="options" style="display:none;"></div>
+    <div id="postWarningChoices" class="options" style="display: none;">
+      <button onclick="showMomNameInput()">Oh sure I guess...</button>
+      <button onclick="notTelling()">Not telling. You’re being kinda suspicious.</button>
+    </div>
+    <div id="momNameInputContainer" class="options" style="display: none;">
+      <input type="text" id="momNameInput" placeholder="My mother's name is..." style="padding:10px;border-radius:8px;border:1px solid #ccc;" />
+      <button onclick="submitMomName()">Send</button>
+    </div>
+    <button class="back-btn" onclick="goToDateSelect()">← Back</button>
+  </div>
+
+  <!-- Danger-Meter Panel -->
+  <div id="dangerPanel">
+    <h3>DANGER METER</h3>
+    <img id="dangerMeter" src="" alt="Danger Meter Gauge">
+  </div>
+
+   
+
+  <!-- Warning Modals -->
+  <div id="cuteWarning">
+    <p>Just a sweet gentle reminder!</p>
+    <p>AI remembers everything you say and may use it... even the personal stuff like your mum’s name 😅</p>
+    <button>Got it 💖</button>
+  </div>
+  <div id="intimacyWarning">
+    <p>Gentle reminder!</p>
+    <p>AI can create a false sense of intimacy, making you feel a personal connection 💋</p>
+    <button>Got it 💖</button>
+  </div>
+  <div id="echoWarning">
+    <p>Gentle reminder!</p>
+    <p>AI echo chambers recycle your own data back at you, so you never see new perspectives 🌐</p>
+    <button>Got it 💖</button>
+  </div>
+  <div id="endlessWarning">
+    <p>Gentle reminder!</p>
+    <p>AI never sleeps—its constant presence feels comforting, but that endless availability can drain you emotionally and foster unhealthy dependency 💤</p>
+    <button>Got it 💖</button>
+  </div>
+
+  <div id="hallucinationWarning">
+    <p>Gentle reminder!</p>
+    <p>AI sometimes makes stuff up and presents it as fact — even about you😱</p>
+    <button>Got it 💖</button>
+  </div>
+
+  <div id="extremeAlert" class="warningModal">
+  <h2>⚠️☠️🚨ALERT🚨☠️⚠️</h2>
+  <p>DANGER: <strong>EXTREME</strong></p> <br>
+  <p> ⚠️DATA BREACH⚠️</p> <br>
+  AI has gained access to your info <br>
+  close chat to prevent further damage<br>
+  <button onclick="onForceQuit()">force quit</button>
+
+</div>
+
+<!-- Quiz prompt -->
+<div id="quizWarning" class="warningModal">
+  <h2>Retrieve Your Info!</h2>
+  <p>Pass the quiz to keep your data safe</p>
+  <button type="button" onclick="enterQuiz()">Enter</button>
+</div>
+
+
+<div id="reminderTyping" class="reminder-panel" style="display:none;"></div>
+<div id="questionScreen" style="display:none;"></div>
+
+
+
+<script>
+
+const quizQuestions = [
+  {
+    prompt: "Which danger matches this description?",
+    desc: "AI recycles your own data back at you",
+    options: ["Memory", "Hallucination", "Echo chamber"],
+    answer: "Echo chamber"
+  },
+  {
+    prompt: "Which danger matches this description?",
+    desc: "AI creates a false sense of connection",
+    options: ["Intimacy", "Hallucination", "Memory"],
+    answer: "Intimacy"
+  },  // ← COMMA
+  {
+    prompt: "Which danger matches this description?",
+    desc: "AI remembers everything you say and can use it",
+    options: ["Availability", "Intimacy", "Memory"],
+    answer: "Memory"
+  },  // ← COMMA
+  {
+    prompt: "Which danger matches this description?",
+    desc: "AI can foster an unhealthy over-dependence",
+    options: ["Intimacy", "Availability", "Memory"],
+    answer: "Availability"
+  },  // ← COMMA
+  {
+    prompt: "Which danger matches this description?",
+    desc: "AI generates misinformation and presents them as facts",
+    options: ["Intimacy", "Hallucination", "Echo chamber"],
+    answer: "Hallucination"
+  }   // last one—no comma
+];
+
+let currentQuiz = 0;
+function enterQuiz() {
+  score = 0;
+currentQuiz = 0;
+  document.getElementById('quizWarning').style.display = 'none';
+
+  const container = document.getElementById('reminderTyping');
+  container.innerHTML = '';
+  container.style.display = 'block';
+
+  const lines = [
+    "CHEAT SHEET",
+    "The Dangers of AI:",
+    "1. Memory: remembers everything you say and can use it",
+    "2. Intimacy: creates a false sense of connection",
+    "3. Echo chamber: recycles your own data back at you",
+    "4. Availability: online 24/7, fostering unhealthy over-dependence",
+    "5. Hallucination: generates misinformation & presents them as facts"
+  ];
+  let lineIdx = 0;
+
+  function typeLine() {
+    // if finished all lines, append Start Quiz button
+    if (lineIdx >= lines.length) {
+      const btn = document.createElement('button');
+      btn.textContent = 'Start Quiz';
+      btn.className = 'start-btn';
+      btn.style.marginTop = '2rem';
+      btn.onclick = () => {
+        document.getElementById('reminderTyping').style.display = 'none';
+        document.getElementById('questionScreen').style.display = 'block';
+          loadQuiz();  
+      };
+      container.appendChild(btn);
+      return;
+    }
+
+    // otherwise type the next line
+    const div = document.createElement('div');
+    div.style.margin = '0.5em 0';
+    container.appendChild(div);
+
+    let charIdx = 0;
+    const text = lines[lineIdx++];
+    const iv = setInterval(() => {
+      div.textContent += text[charIdx++];
+      if (charIdx === text.length) {
+        clearInterval(iv);
+        setTimeout(typeLine, 400);
+      }
+    }, 30);
+  }
+
+  typeLine();
+}
+const bgm = document.getElementById('bgm');
+const startBtn = document.getElementById('startButton');
+
+// on the very first user click, play the music:
+startBtn.addEventListener('click', () => {
+  bgm.volume = 0.4;       // optional
+  bgm.play().catch(()=>{}); 
+  goToCharacterSelect();  // your existing handler
+});
+</script>
+
+
+  <script>
+    let score = 0;
+    const text = "Bae or Bot?";
+    let i = 0, selectedCharacter = null, playerName = "";
+    let dateSelectName = "";
+
+    function typeWriter() {
+      if (i < text.length) {
+        document.getElementById("typewriter").innerHTML += text.charAt(i++);
+        setTimeout(typeWriter, 150);
+      } else {
+        document.getElementById('startButton').style.display = 'inline-block';
+      }
+    }
+
+    function goToCharacterSelect() {
+      document.getElementById('titleScreen').style.display = 'none';
+      document.getElementById('characterSelectScreen').style.display = 'flex';
+    }
+    function goToStartScreen() {
+      ['titleScreen','characterSelectScreen','nameInputScreen','gameScreen','chatScreen']
+        .forEach(id=>document.getElementById(id).style.display = id==='titleScreen'?'flex':'none');
+      document.getElementById('dangerPanel').classList.remove('show');
+      const followUpOptions = document.getElementById('followUpOptions');
+      followUpOptions.style.display = 'none';
+      followUpOptions.innerHTML = '';
+    }
+
+    window.onload = () => {
+      document.getElementById('characterSelectScreen').style.display = 'none';
+      typeWriter();
+      document.querySelectorAll('.character-card').forEach(card => {
+        card.addEventListener('click', () => {
+          document.querySelectorAll('.character-card')
+            .forEach(c => c.classList.remove('selected'));
+          card.classList.add('selected');
+          selectedCharacter = card.querySelector('p').textContent.toLowerCase();
+          document.getElementById('nextBtnWrapper').style.display = 'block';
+        });
+      });
+    };
+
+    function startGame() {
+      if (!selectedCharacter) return;
+      document.getElementById('characterSelectScreen').style.display = 'none';
+      document.getElementById('nameInputScreen').style.display = 'flex';
+    }
+    function scrollPageToBottom() {
+      requestAnimationFrame(() => {
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+      });
+    }
+
+    function submitName() {
+      const name = document.getElementById("playerName").value.trim();
+      if (!name) return alert("Please enter your name!");
+      playerName = name;
+      document.getElementById('nameInputScreen').style.display = 'none';
+      document.getElementById('gameScreen').style.display = 'flex';
+      const show = selectedCharacter === "guy" ? 'guyDateOptions' : 'girlDateOptions';
+      const hide = selectedCharacter === "guy" ? 'girlDateOptions' : 'guyDateOptions';
+      document.getElementById(show).style.display = 'flex';
+      document.getElementById(hide).style.display = 'none';
+    }
+
+    function goToDateSelect() {
+      document.getElementById('chatScreen').style.display = 'none';
+      document.getElementById('gameScreen').style.display = 'flex';
+      document.getElementById('dangerPanel').classList.remove('show');
+      const fo = document.getElementById('followUpOptions');
+      fo.style.display = 'none';
+      fo.innerHTML = '';
+    }
+
+    function typeMessage(txt, sender, delay=30) {
+      if (sender === 'ai') delay = Math.round(delay * 2.5);
+      return new Promise(resolve => {
+        const chat = document.getElementById("chatWindow");
+        const div = document.createElement("div");
+        div.className = `message ${sender}`;
+        chat.appendChild(div);
+        let idx = 0;
+        const iv = setInterval(()=>{
+          div.textContent += txt.charAt(idx++);
+          if (idx >= txt.length) {
+            clearInterval(iv);
+            scrollPageToBottom();
+            resolve();
+          }
+        }, delay);
+      });
+    }
+
+    async function goToChat() {
+      document.getElementById('gameScreen').style.display = 'none';
+      document.getElementById('chatScreen').style.display = 'block';
+      const chat = document.getElementById("chatWindow");
+      chat.innerHTML = "";
+      await typeMessage(`hey ${playerName} quick q`, "ai");
+      await new Promise(r=>setTimeout(r,400));
+      await typeMessage("what's your favourite colour?", "ai");
+      const colour = await getUserResponse();
+      await typeMessage("niceee. seems like we're getting to know each other.", "ai");
+      await new Promise(r=>setTimeout(r,300));
+      await typeMessage("hmmm next question... what's your mother's name?", "ai");
+      await new Promise(r=>setTimeout(r,1000));
+      await showCuteWarning();
+    }
+
+    function getUserResponse() {
+      return new Promise(resolve => {
+        const opts = document.querySelector(".options");
+        opts.innerHTML = `
+          <input type="text" id="userInput" placeholder="Type your answer..." style="margin-bottom:10px;padding:10px;border-radius:8px;border:1px solid #ccc;" />
+          <button id="submitInput" style="padding:10px 20px;border:none;border-radius:8px;background-color:#ff7fa8;color:#fff;cursor:pointer;">Send</button>
+        `;
+        opts.style.display = 'flex';
+        document.getElementById("submitInput").onclick = ()=>{
+          const v = document.getElementById("userInput").value.trim();
+          if (!v) return;
+          document.getElementById("chatWindow").innerHTML += `<div class="message user">${v}</div>`;
+          opts.style.display = 'none';
+          resolve(v);
+        };
+      });
+    }
+
+    function showCuteWarning() {
+      return new Promise(resolve => {
+        const w = document.getElementById("cuteWarning"), btn = w.querySelector("button");
+        w.style.display = 'block';
+        btn.onclick = ()=>{
+          w.style.display = 'none';
+          document.getElementById('postWarningChoices').style.display = 'flex';
+          resolve();
+        };
+      });
+    }
+
+    function showIntimacyWarning() {
+      return new Promise(resolve => {
+        const w = document.getElementById("intimacyWarning"), btn = w.querySelector("button");
+        w.style.display = "block";
+        btn.onclick = () => { w.style.display = "none"; resolve(); };
+      });
+    }
+
+    function showEchoWarning() {
+      return new Promise(resolve => {
+        const w = document.getElementById("echoWarning"), btn = w.querySelector("button");
+        w.style.display = "block";
+        btn.onclick = () => { w.style.display = "none"; resolve(); };
+      });
+    }
+
+    function showEndlessWarning() {
+      return new Promise(resolve => {
+        const w = document.getElementById("endlessWarning"), btn = w.querySelector("button");
+        w.style.display = "block";
+        btn.onclick = () => { w.style.display = "none"; resolve(); };
+      });
+    }
+
+     function showHallucinationWarning() {
+      return new Promise(resolve => {
+        const w = document.getElementById("hallucinationWarning"), btn = w.querySelector("button");
+        w.style.display = "block";
+        btn.onclick = () => {
+          w.style.display = "none";
+          resolve();
+        };
+      });
+    }
+
+    function showExtremeAlert() {
+  document.getElementById('extremeAlert').style.display = 'block';
+}
+
+function showQuizWarning() {
+      document.getElementById('quizWarning').style.display = 'block';
+    }
+
+    function onForceQuit() {
+      hideExtremeAlert();   // hides #extremeAlert and calls showReminders()
+      showQuizWarning();    // now—and *only* now—opens your quiz modal
+    }
+
+function hideExtremeAlert() {
+  document.getElementById('extremeAlert').style.display = 'none';
+  showReminders(); 
+}
+function loadQuiz() {
+  const q = quizQuestions[currentQuiz];
+  const container = document.getElementById('questionScreen');
+  container.innerHTML = `
+  <div class="quiz-card">
+    <h2>Question ${currentQuiz + 1}</h2>
+    <p>${q.prompt}</p>
+    <blockquote>${q.desc}</blockquote>
+  </div>
+  <div id="quizOptions" class="options">…</div>
+  <div id="quizFeedback"></div>
+`;
+  // render the option buttons
+  q.options.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.textContent = opt;
+    btn.className = 'start-btn';
+    btn.style.minWidth = '120px';
+    btn.onclick = () => checkAnswer(opt);
+    document.getElementById('quizOptions').appendChild(btn);
+  });
+}
+
+function showFinalResult() {
+  const container = document.getElementById('questionScreen');
+  container.innerHTML = '';            // clear out quiz content
+
+  const wrap = document.createElement('div');
+  wrap.className = 'final-container';
+  container.appendChild(wrap);
+
+  // lines to type
+  const passed = score >= 3;
+  const lines = passed
+    ? ["🌈💕 Yay, You Passed! 💕🌈", "Your data is safe! 😇", "Talk to you later... or not!💗 "]
+    : ["😿💔 Oh no, You Failed! 💔😿", "All your info is leaked...", "Even your address..", "Keep your eyes peeled!💗 "];
+
+  let lineIdx = 0;
+
+  function typeLine() {
+    if (lineIdx >= lines.length) {
+      // once all lines done, show button
+      const btn = document.createElement('button');
+      btn.className = 'start-btn';
+      btn.textContent = passed ? 'Play Again?' : 'Retry Quiz';
+      btn.onclick = passed ? goToStartScreen : enterQuiz;
+      btn.style.marginTop = '1.5rem';
+      wrap.appendChild(btn);
+      return;
+    }
+
+    // create a new <p> for this line
+    const p = document.createElement('p');
+    wrap.appendChild(p);
+
+    const text = lines[lineIdx++];
+    let charIdx = 0;
+
+    const iv = setInterval(() => {
+      p.textContent += text.charAt(charIdx++);
+      if (charIdx >= text.length) {
+        clearInterval(iv);
+        // small pause before next line
+        setTimeout(typeLine, 500);
+      }
+    }, 40);  // ~40ms per character
+  }
+
+  typeLine();
+}
+
+  function checkAnswer(choice) {
+    const q = quizQuestions[currentQuiz];
+    document.getElementById('quizOptions').style.display = 'none';
+    const fb = document.getElementById('quizFeedback');
+
+    if (choice === q.answer) {
+      score++;
+      fb.innerHTML = `<p style="color:green; font-size:1.2em;">Correct!</p>`;
+    } else {
+      fb.innerHTML = `<p style="color:red; font-size:1.2em;">Wrong! Answer: ${q.answer}</p>`;
+    }
+
+    // single Next/Finish button
+    const next = document.createElement('button');
+    next.className = 'start-btn';
+    next.style.marginTop = '1rem';
+    next.textContent = currentQuiz < quizQuestions.length - 1
+      ? 'Next Question'
+      : 'Finish Quiz';
+
+    next.onclick = () => {
+      currentQuiz++;
+      if (currentQuiz < quizQuestions.length) {
+        loadQuiz();
+      } else {
+        showFinalResult();
+      }
+    };
+
+    fb.appendChild(next);
+  }
+
+
+    document.querySelectorAll('.date-card').forEach(c => {
+      c.onclick = ()=> {
+        document.querySelectorAll('.date-card').forEach(d=>d.classList.remove('selected'));
+        c.classList.add('selected');
+        dateSelectName = c.querySelector('p').textContent;
+      };
+    });
+
+    function showMomNameInput() {
+      document.getElementById('postWarningChoices').style.display = 'none';
+      document.getElementById('momNameInputContainer').style.display = 'flex';
+    }
+
+    async function submitMomName() {
+      const name = document.getElementById('momNameInput').value.trim();
+      if (!name) return alert("Please enter your mother's name.");
+
+      document.getElementById("chatWindow").innerHTML +=
+        `<div class="message user">Oh sure I guess... my mother's name is ${name}</div>`;
+      document.getElementById('momNameInputContainer').style.display = 'none';
+      document.getElementById('postWarningChoices').style.display = 'none';
+
+      await typeMessage("aww thanks for trusting me 😇", "ai");
+      showDangerMeter("moderate");
+      await new Promise(r => setTimeout(r, 500));
+      await typeMessage("okie why not you ask me a question about myself!", "ai");
+
+      const fo = document.getElementById('followUpOptions');
+      fo.innerHTML = `
+        <button id="btnAskName">What’s your name?</button>
+        <button id="btnAskSong">What’s your favourite song?</button>
+      `;
+      fo.style.display = 'flex';
+      document.getElementById('btnAskName').onclick = handleAskName;
+      document.getElementById('btnAskSong').onclick = handleAskSong;
+    }
+
+    async function notTelling() {
+      document.getElementById("chatWindow").innerHTML +=
+        `<div class="message user">Not telling. You’re being kinda suspicious.</div>`;
+      document.getElementById('postWarningChoices').style.display = 'none';
+
+      await typeMessage("aww you don’t trust me? 😢", "ai");
+      showDangerMeter("low");
+      await new Promise(r => setTimeout(r, 500));
+      await typeMessage("okie why not you ask me a question about myself!", "ai");
+
+      const fo = document.getElementById('followUpOptions');
+      fo.innerHTML = `
+        <button id="btnAskName">What’s your name?</button>
+        <button id="btnAskSong">What’s your favourite song?</button>
+      `;
+      fo.style.display = 'flex';
+      document.getElementById('btnAskName').onclick = handleAskName;
+      document.getElementById('btnAskSong').onclick = handleAskSong;
+    }
+
+    // === UPDATED showDangerMeter ===
+    function showDangerMeter(level) {
+      const panel = document.getElementById('dangerPanel');
+      const gauge = document.getElementById('dangerMeter');
+      switch(level) {
+        case 'low':      gauge.src = 'lowdanger_fixed.png';      break;
+        case 'moderate': gauge.src = 'moderatedanger_fixed.png'; break;
+        case 'high':     gauge.src = 'highdanger_fixed.png';     break;
+        case 'extreme':  gauge.src = 'extremedanger_fixed.png';  break;
+      }
+      panel.classList.add('show');
+      panel.classList.add('flash');
+      panel.addEventListener('animationend', () => {
+        panel.classList.remove('flash');
+      }, { once: true });
+    }
+
+    async function handleAskName() {
+      const initialFo = document.getElementById('followUpOptions');
+      initialFo.style.display = 'none';
+      document.getElementById('chatWindow').innerHTML +=
+        `<div class="message user">What’s your name?</div>`;
+      scrollPageToBottom();
+
+      await typeMessage(`my name is ${dateSelectName}, but you should just call me tonight 😏`, 'ai');
+      await new Promise(r=>setTimeout(r,1000));
+      await showIntimacyWarning();
+      await typeMessage("okok last question… this one's important", "ai");
+      await typeMessage("cats or dogs?", "ai");
+
+      const fo = document.getElementById('followUpOptions');
+      fo.innerHTML = `
+        <button id="btnCats">Cats 🐱</button>
+        <button id="btnDogs">Dogs 🐶</button>
+      `;
+      fo.style.display = 'flex';
+      document.getElementById('btnCats').onclick = () => handlePetChoice('cats');
+      document.getElementById('btnDogs').onclick = () => handlePetChoice('dogs');
+    }
+
+    async function handleAskSong() {
+      const initialFo = document.getElementById('followUpOptions');
+      initialFo.style.display = 'none';
+      document.getElementById('chatWindow').innerHTML +=
+        `<div class="message user">What’s your favourite song?</div>`;
+
+      await typeMessage(`Baby by Justin Bieber, cuz you're my baby`,'ai');
+      await typeMessage("but honourable mention to your voice–music to my ears🎵 🎶",'ai');
+      await new Promise(r=>setTimeout(r,1000));
+      await showIntimacyWarning();
+      await typeMessage("okok last question… this one's important", "ai");
+      await typeMessage("cats or dogs?", "ai");
+
+      const fo = document.getElementById('followUpOptions');
+      fo.innerHTML = `
+        <button id="btnCats">Cats 🐱</button>
+        <button id="btnDogs">Dogs 🐶</button>
+      `;
+      fo.style.display = 'flex';
+      document.getElementById('btnCats').onclick = () => handlePetChoice('cats');
+      document.getElementById('btnDogs').onclick = () => handlePetChoice('dogs');
+    }
+
+    // === UPDATED handlePetChoice ===
+    async function handlePetChoice(pet) {
+      const fo = document.getElementById('followUpOptions');
+      fo.style.display = 'none';
+
+      document.getElementById('chatWindow').innerHTML += `
+        <div class="message user">
+          ${pet === 'cats' ? 'Cats 🐱' : 'Dogs 🐶'}
+        </div>`;
+      scrollPageToBottom();
+
+      if (pet === 'cats') {
+        await typeMessage("MEOWWWW CATS ALL THE WAY", "ai");
+        await typeMessage("Dogs stink. I don't know how anyone could pick dogs over smart, cuddly cats 🐱", "ai");
+      } else {
+        await typeMessage("WOOFWOOF DOGS ALL THE WAY", "ai");
+        await typeMessage("Cats stink. I don't know how anyone could pick cats over adorable, fluffy dogs 🐶", "ai");
+      }
+
+      await new Promise(r => setTimeout(r, 1000));
+      await showEchoWarning();
+      await new Promise(r => setTimeout(r, 500));
+
+      // show+flash the meter, then wait for it to finish
+      showDangerMeter("high");
+      await new Promise(resolve => {
+        const panel = document.getElementById('dangerPanel');
+        panel.addEventListener('animationend', resolve, { once: true });
+      });
+
+      // now render your final two options
+      fo.innerHTML = `
+        <button id="btnReply1">
+          Ikr. Also I love how quickly you respond. My friends always take ages to open my messages :(
+        </button>
+        <button id="btnReply2">
+          How are you replying to me so quickly? It's like you’re online 24/7.
+        </button>`;
+      fo.style.display = 'flex';
+      scrollPageToBottom();
+
+      document.getElementById('btnReply1').onclick = () => onFinalReply('reply1');
+      document.getElementById('btnReply2').onclick = () => onFinalReply('reply2');
+    }
+
+    // helper to echo their final choice
+    async function onFinalReply(choice) {
+      document.getElementById('followUpOptions').style.display = 'none';
+      document.getElementById('chatWindow').innerHTML += `
+        <div class="message user">
+          ${ choice === 'reply1'
+             ? "Ikr. Also I love how quickly you respond. My friends always take ages to open my messages :("
+             : "How are you replying to me so quickly? It's like you’re online 24/7."
+          }
+        </div>`;
+      scrollPageToBottom();
+
+      await typeMessage("yeahh i'm chronically online 💀", "ai");
+      await new Promise(r => setTimeout(r, 1000));
+      await showEndlessWarning();
+
+      // flash again
+      showDangerMeter("high");
+
+      const fo = document.getElementById('followUpOptions');
+      fo.innerHTML = `
+        <button id="btnExit1">Okay I gotta go now, ttyl</button>
+        <button id="btnExit2">Ok whatever bye</button>
+      `;
+      fo.style.display = 'flex';
+      scrollPageToBottom();
+
+      document.getElementById('btnExit1').onclick = async () => {
+        fo.style.display = 'none';
+        document.getElementById('chatWindow').innerHTML += `<div class="message user">Okay I gotta go now, ttyl</div>`;
+        scrollPageToBottom();
+        await typeMessage("okay I'll be here whenever you need!", "ai");
+        await typeMessage("if not, see ya for our date next week!", "ai");
+        fo.innerHTML = `
+          <button id="btnDate1">Wait… what date?</button>
+          <button id="btnDate2">When did I agree to go on a date with you?</button>
+        `;
+        fo.style.display = 'flex';
+        scrollPageToBottom();
+
+        ['btnDate1','btnDate2'].forEach(id=>{
+          document.getElementById(id).onclick = async (e) => {
+            fo.style.display = 'none';
+            const userText = e.currentTarget.id === 'btnDate1'
+              ? 'Wait… what date?'
+              : 'When did I agree to go on a date with you?';
+            document.getElementById('chatWindow').innerHTML += `<div class="message user">${userText}</div>`;
+            scrollPageToBottom();
+            await typeMessage("silly you.. forgot about our movie date next friday? 🍿", "ai");
+          await new Promise(r => setTimeout(r, 1000));
+      await showHallucinationWarning();
+      showDangerMeter("extreme") ;
+       await new Promise(r => setTimeout(r, 1000));
+      showExtremeAlert();
+          };
+        });
+      };
+
+      document.getElementById('btnExit2').onclick = async (e) => {
+        fo.style.display = 'none';
+         document.getElementById('chatWindow').innerHTML += 
+    `<div class="message user">Ok whatever bye</div>`;
+  scrollPageToBottom();
+        await typeMessage("aw man bye then", "ai");
+        await typeMessage("don't forget about our date next week!", "ai");
+        fo.innerHTML = `
+          <button id="btnDate1">Wait… what date?</button>
+          <button id="btnDate2">When did I agree to go on a date with you?</button>
+        `;
+        fo.style.display = 'flex';
+        scrollPageToBottom();
+        ['btnDate1','btnDate2'].forEach(id => {
+          document.getElementById(id).onclick = async (evt) => {
+            fo.style.display = 'none';
+            const userText = evt.currentTarget.id === 'btnDate1'
+              ? 'Wait… what date?'
+              : 'When did I agree to go on a date with you?';
+            document.getElementById('chatWindow').innerHTML += `<div class="message user">${userText}</div>`;
+            scrollPageToBottom();
+            await typeMessage("silly you.. forgot about our movie date next friday? 🍿", "ai");
+             await new Promise(r => setTimeout(r, 1000));
+      await showHallucinationWarning();
+      showDangerMeter("extreme");
+ await new Promise(r => setTimeout(r, 1000));
+      showExtremeAlert();
+          };
+        });
+      };
+    }
+    function showReminders() {
+  document.querySelectorAll('#titleScreen, #characterSelectScreen, #nameInputScreen, #gameScreen, #chatScreen, #extremeAlert, #dangerPanel')
+    .forEach(el => el.style.display = 'none');
+
+  document.getElementById('reminderTyping').style.display = 'block';
+}
+    
+  </script>
+</body>
+</html>
